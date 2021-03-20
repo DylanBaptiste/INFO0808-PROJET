@@ -32,8 +32,8 @@ for(type in types){
 		if(type == "caracteristiques" && annee != 2019 ){
 			
 			#format 0294992 5055737
-			nextdata$long <- as.numeric(sub("(.{2})(.*)", "\\1.\\2", nextdata$long))
-			nextdata$lat <- as.numeric(sub("(.{2})(.*)", "\\1.\\2", nextdata$lat))
+			nextdata$long <- as.numeric(sub("(.*)(.{5})", "\\1.\\2", as.character(nextdata$long)))
+			nextdata$lat <- as.numeric(sub("(.*)(.{5})", "\\1.\\2", as.character(nextdata$lat)))
 		}
 		if(type == "caracteristiques" && annee != 2019){
 			nextdata[(nextdata$dep < 971) & (nextdata$dep != 201) & (nextdata$dep != 202),]$dep  <- nextdata[(nextdata$dep < 971) & (nextdata$dep != 201) & (nextdata$dep != 202),]$dep / 10
@@ -73,7 +73,8 @@ data$caracteristiques$hr[is.na(data$caracteristiques$hr)] <- 0
 #data$caracteristiques[,c('hrmn', 'hr', 'mn')] #pour verifier
 data$caracteristiques$hrmn <- NULL
 
-
+data$caracteristiques$long[data$caracteristiques$long == 0.0] <- NA
+data$caracteristiques$lat[data$caracteristiques$lat == 0.0] <- NA
 
 write.csv(data$caracteristiques, "caracteristiques.csv", sep=",", row.names=FALSE)
 write.csv(data$lieux, "lieux.csv", sep=",", row.names=FALSE)
