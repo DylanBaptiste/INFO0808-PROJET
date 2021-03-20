@@ -1,14 +1,15 @@
 library(dplyr)
 library(stringr)
 require(tidyr)
-
+library(stringr)
+library(stringi)
 c <- read.csv("datasets/caracteristiques_2019.csv", sep=';', header = TRUE)
 l <- read.csv("datasets/lieux_2019.csv", sep=';', header = TRUE)
 u <- read.csv("datasets/usagers_2019.csv", sep=';', header = TRUE)
 v <- read.csv("datasets/vehicules_2019.csv", sep=';', header = TRUE)
 
 
-types <- c("caracteristiques", "lieux", "usagers", "vehicules")
+types <- c("caracteristiques")#, "lieux", "usagers", "vehicules")
 annees <- 2005:2019
 
 data <- list("caracteristiques"=data.frame(matrix(ncol = length(names(c))+1, nrow = 0)), "lieux"=data.frame(matrix(ncol = length(names(l)), nrow = 0)), "usagers"=data.frame(matrix(ncol = 16, nrow = 0)), "vehicules"=data.frame(matrix(ncol = length(names(v)), nrow = 0)))
@@ -28,18 +29,22 @@ for(type in types){
 		print(paste("Process: ", type, annee))
 		nextdata <- read.csv(path, sep=sep, header = TRUE)
 		nextdata$an <- annee
-		if(type == "caracteristiques"){
-			nextdata$long <- as.numeric(nextdata$long)
-			nextdata$lat <- as.numeric(nextdata$lat)
+		if(type == "caracteristiques" && annee != 2019 ){
+			
+			#format 0294992 5055737
+			nextdata$long <- as.numeric(sub("(.{2})(.*)", "\\1.\\2", nextdata$long))
+			nextdata$lat <- as.numeric(sub("(.{2})(.*)", "\\1.\\2", nextdata$lat))
 		}
 		if(type == "caracteristiques" && annee != 2019){
 			nextdata[(nextdata$dep < 971) & (nextdata$dep != 201) & (nextdata$dep != 202),]$dep  <- nextdata[(nextdata$dep < 971) & (nextdata$dep != 201) & (nextdata$dep != 202),]$dep / 10
 			nextdata$dep[nextdata$dep == 201] <- '2A'
 			nextdata$dep[nextdata$dep == 202] <- '2B'
-			
 		}
 		if(type == "caracteristiques" && annee == 2019){
-		
+			#sous la forme 48,9307000 pour 2019
+			nextdata$long <- as.numeric(str_replace(nextdata$long, ',', '.'))
+			nextdata$lat <- as.numeric(str_replace(nextdata$lat, ',', '.'))
+			
 			nextdata$com <- as.integer(gsub('^.{2}', '', nextdata$com))
 		}
 		if(type=="lieux"){

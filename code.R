@@ -112,6 +112,45 @@ plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~sexe, textposition = 'auto'
 
 
 
+library(leaflet)
+library(leaflet.opacity)
+library(viridisLite)
+map.opacity = 0.30
+
+##### p 92 ####
+paris <- caracteristiques[(caracteristiques$dep == 75) & (caracteristiques$an == 2019), ] # paris en 2019
+# paris <- caracteristiques[(caracteristiques$an == 2019), ] # tout les points de 2019
+
+str(paris)
+
+m2 <- leaflet() %>% setView(lng = 2.351462, lat = 48.8567, zoom = 12) %>%
+	addTiles() %>%
+	addProviderTiles("Wikimedia")
+
+
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+
+pal <- colorNumeric(palette = viridis(100), domain = range(paris$int))
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(int), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(lum), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(atm), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(col), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+
+
+##### p 93 ####
+m2 %>% addProviderTiles("Wikimedia")
+
+##### p 94 ####
+m2 %>% addProviderTiles("Esri.NatGeoWorldMap")
+
+##### p 95 ####
+m2 %>%
+	addProviderTiles("Stamen.Watercolor") %>%
+	addProviderTiles("Stamen.TonerHybrid")
+
+##### p 96 ####
+
+
 
 
 
