@@ -37,14 +37,7 @@ labeller.catu <- function(variable, value){ return (list("1"="Indemne", "2"="Tu�
 ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(vars(grav, sexe), nrow = 4, labeller=labeller.catu ) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 10)) + ggtitle("")
 ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(vars(grav, sexe), nrow = 4) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("")
 
-library(maps)
-france<-map(database="france")
 
-dpt2001<-c("Ain","Marne","Nord","Charente")
-col2001<-c(1,2,3,5)
-match <- match.map(france,dpt2001,exact=TRUE)
-color <- col2001[match] 
-map(database="france", fill=TRUE, col=color)
 
 
 
