@@ -73,8 +73,13 @@ d3 <- d1 %>%
 
 ggplotly(ggplot(d2, aes(x=Date, y=Count)) + geom_line() + geom_smooth(formula=y~x, method = 'loess'))
 plot_ly(d3, x=~Date) %>% add_lines(y=~Count)
-plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)
+
 plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
+
+
+
+plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(boxmode = "group")
+plot_ly(d1, x=~day) %>% add_boxplot(y=~Count, color=~factor(month.abb[month(Date)], levels = month.abb)) %>% layout(boxmode = "group")
 
 plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count)
 
@@ -83,7 +88,10 @@ d4 <- d1 %>%
 	group_by(Day, Mois, p, Date) %>%
 	summarise(Count = sum(Count))
 d4 <- d4[ with(d4, order(Mois, Day)), ]
-plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))
+
+plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count) #par mois
+plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count) #par semaine
+plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p)) #par jour
 
 ggplot(caracteristiques, aes(x=dep)) + geom_bar()
 
@@ -144,16 +152,18 @@ caracteristiques <- read.csv("caracteristiques.csv", sep=',', header = TRUE)
 reims <- caracteristiques[(caracteristiques$dep == 51) & (caracteristiques$an >= 2005), ] # reims entre 2015 et 2019
 pal <- colorNumeric(palette = viridis(100), domain = range(reims$an))
 leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
+pal <- colorNumeric(palette = viridis(100), domain = range(reims$hr))
+leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 5, stroke = FALSE, fillOpacity = 0.75) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
 
 
 str(caracteristiques)
 outmer <- caracteristiques[(caracteristiques$dep == '974'), ] # reunion 
 pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(2019, 2005))
-leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1)
-
 pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(outmer$an))
 #aberation pour les années avant 2019 la lat est positive ?????
 leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
+head(read.csv("datasets/caracteristiques_2018.csv", sep=',', header = TRUE), 5)
+head(read.csv("datasets/caracteristiques_2019.csv", sep=';', header = TRUE), 5)
 leaflet(data = outmer) %>% addCircleMarkers(~long, ~-abs(lat), color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
 table(sort(outmer$an))
 ##### p 93 ####

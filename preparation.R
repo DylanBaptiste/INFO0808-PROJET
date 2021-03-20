@@ -9,7 +9,7 @@ u <- read.csv("datasets/usagers_2019.csv", sep=';', header = TRUE)
 v <- read.csv("datasets/vehicules_2019.csv", sep=';', header = TRUE)
 
 
-types <- c("caracteristiques")#, "lieux", "usagers", "vehicules")
+types <- c("caracteristiques", "lieux", "usagers", "vehicules")
 annees <- 2005:2019
 
 data <- list("caracteristiques"=data.frame(matrix(ncol = length(names(c))+1, nrow = 0)), "lieux"=data.frame(matrix(ncol = length(names(l)), nrow = 0)), "usagers"=data.frame(matrix(ncol = 16, nrow = 0)), "vehicules"=data.frame(matrix(ncol = length(names(v)), nrow = 0)))
@@ -81,7 +81,10 @@ write.csv(data$lieux, "lieux.csv", sep=",", row.names=FALSE)
 write.csv(data$usagers, "usagers.csv", sep=",", row.names=FALSE)
 write.csv(data$vehicules, "vehicules.csv", sep=",", row.names=FALSE)
 
-
-
+# fusion de lieux et caracteristiques # 200500085562
+merged <- merge(x = data$caracteristiques, y = data$lieux, by = "Num_Acc", all = TRUE)
+merged$an.x <- NULL
+names(merged)[names(merged) == 'an.y'] <- 'an'
+write.csv(merged, "accidents.csv", sep=",")
 
 
