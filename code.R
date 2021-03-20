@@ -115,11 +115,14 @@ plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~sexe, textposition = 'auto'
 library(leaflet)
 library(leaflet.opacity)
 library(viridisLite)
+
+
 map.opacity = 0.30
 
 ##### p 92 ####
+
 paris <- caracteristiques[(caracteristiques$dep == 75) & (caracteristiques$an == 2019), ] # paris en 2019
-# paris <- caracteristiques[(caracteristiques$an == 2019), ] # tout les points de 2019
+paris <- caracteristiques[(caracteristiques$an == 2015), ] # tout les points de 2019
 
 str(paris)
 
@@ -127,6 +130,7 @@ m2 <- leaflet() %>% setView(lng = 2.351462, lat = 48.8567, zoom = 12) %>%
 	addTiles() %>%
 	addProviderTiles("Wikimedia")
 
+leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 
@@ -136,7 +140,22 @@ leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(lum), radius=
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(atm), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(col), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 
+caracteristiques <- read.csv("caracteristiques.csv", sep=',', header = TRUE)
+reims <- caracteristiques[(caracteristiques$dep == 51) & (caracteristiques$an >= 2005), ] # reims entre 2015 et 2019
+pal <- colorNumeric(palette = viridis(100), domain = range(reims$an))
+leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
 
+
+str(caracteristiques)
+outmer <- caracteristiques[(caracteristiques$dep == '974'), ] # reunion 
+pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(2019, 2005))
+leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1)
+
+pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(outmer$an))
+#aberation pour les années avant 2019 la lat est positive ?????
+leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
+leaflet(data = outmer) %>% addCircleMarkers(~long, ~-abs(lat), color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
+table(sort(outmer$an))
 ##### p 93 ####
 m2 %>% addProviderTiles("Wikimedia")
 
