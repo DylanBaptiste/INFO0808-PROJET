@@ -102,10 +102,10 @@ usagers <- read.csv("clean_datasets/usagers.csv", sep=',', header = TRUE)
 str(usagers)
 ggplotly(ggplot(usagers, aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des personnes impliquées dans un accident de la route en France en 2019"))
 
-d <- setNames(data.frame(table(usagers$place)), c('place', 'count'))
+d <- setNames(data.frame(table(usagers[usagers$place != 1,]$place)), c('place', 'count'))
 plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~paste0(formatC(100 * count/sum(count), format='f', digits = 2), "%"), textposition = 'auto')
 
-plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~paste0(formatC(100 * count/sum(count), format='f', digits = 2), "%"), textposition = 'auto')
+# TODO test en separant par le sexe plot_ly(d, x=~place) %>% add_bars(d, y=~count text=~paste0(formatC(100 * count/sum(count), format='f', digits = 2), "%"), textposition = 'auto')
 
 d <- setNames(data.frame(table(usagers$place, usagers$sexe, usagers$an)), c('place', "sexe", "an", 'count'))
 plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~sexe, textposition = 'auto') %>% layout(yaxis = list(title = 'Count'), barmode = 'group')
