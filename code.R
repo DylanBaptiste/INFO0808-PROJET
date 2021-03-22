@@ -46,7 +46,7 @@ ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap
 
 
 
-caracteristiques <- read.csv("clean_datasets/caracteristiques.csv", sep=',', header = TRUE)
+caracteristiques <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
 
 
 
