@@ -7,7 +7,7 @@ library("plotly")
 library(leaflet)
 library(leaflet.opacity)
 library(viridisLite)
-
+library(broom)
 # ================================== ======= ================================== #
 # ================================== PLOT OK ================================== #
 # ================================== ======= ================================== #
@@ -15,7 +15,7 @@ library(viridisLite)
 accidents <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
 str(accidents)
 
-anhr <- setNames(data.frame(table(caracteristiques$an, caracteristiques$hr)), c("an", "hr", "count"))
+anhr <- setNames(data.frame(table(accidents$an, accidents$hr)), c("an", "hr", "count"))
 str(anhr)
 
 plot_ly(anhr, x=~hr, y=~count, color=~an, type='scatter', mode = 'lines')
@@ -23,7 +23,36 @@ plot_ly(anhr, x=~an, y=~count, color=~hr, type='scatter', mode = 'lines')
 plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")
 plot_ly(anhr, x=~hr, y=~an, z=~count, type="scatter3d") # osef de lui ?
 
+plot_ly(anhr, x=~hr, y=~count, color=~an, type="bar")
+
 # Test l'heure des accidents en fonction des jours de la semaine
+d5 <- setNames(data.frame(table(weekdays(as.Date(paste(accidents$an, accidents$mois, accidents$jour, sep='-'))), accidents$hr )),c("Day", "hr", "Count"))
+
+plot_ly(d5, x=~Day, y=~Count, color=~hr, type="bar") %>% layout(yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
+plot_ly(d5, x=~hr, y=~Count, color=~factor(Day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")), type="bar")
+
+d1 <- setNames(data.frame(table(as.Date(paste(accidents$an, accidents$mois, accidents$jour, sep='-')))),c("Date","Count"))
+d1$day <- weekdays(as.Date(d1$Date))
+dim(d1)[1]
+str(d1)
+
+d6 <- NULL
+d6 <- d1[,c("Date", "Count")]
+d6$breaks <- as.Date(cut(as.Date(d1$Date, format = "%Y-%m-%d"), breaks = "33 days"), format = "%Y-%m-%d")
+d6 <- d6 %>% group_by(breaks) %>% summarise(Count = sum(Count))
+str(d6)
+
+lois = data.frame(Date = c("2012-01-05", "2012-07-01", "2018-07-01"), text=c("avertisseurs de radars interdits", "éthylotest obligatoirs", "loi 80Km/h"), colors="red", "black", "green")
+
+l <- loess(Count ~ as.numeric(breaks), data=d6)
+r <- setNames(augment(l), c("Count", ".se.fit", ".fitted"))
+r$breaks <- d6$breaks
+plot_ly(d6, x=~breaks) %>%
+	add_lines(y=~Count, name='Total', opacity=0.25, line = list(color = '#553333')) %>%
+	add_lines(y=~fitted(l), line=list(color='#07A4B5'), name="Loess Smoother", showlegend=TRUE) %>%
+	add_ribbons(data=r, ymin = ~.fitted - 0.04 * .se.fit, ymax = ~.fitted + 0.04 * .se.fit, line = list(color = 'rgba(7, 164, 181, 0.05)'), fillcolor = 'rgba(7, 164, 181, 0.2)', name = "Standard Error") %>%
+	add_segments(data=lois, x=~Date, xend=~Date, color=~text, colors=~colors, text=~text, y=min(d6$Count), yend=max(d6$Count))
+
 
 # ================================== ==================== ================================== #
 # ================================== PLOT EN CONSTRCUTION ================================== #
