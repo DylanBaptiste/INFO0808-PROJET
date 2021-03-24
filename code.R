@@ -45,7 +45,9 @@ d4 <- d4[ with(d4, order(Mois, Day)), ]
 plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents")) #par mois
 plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction du numero de la semaine de 2005 ? 2019",xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
 plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(title = "Nombre d'accident en fonction des jours de l'annee de 2005 ? 2019",xaxis = list(title="Jour de l'ann?e"), yaxis = list(title="Nombre d'accidents")) #par jour
-ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")
+
+ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.2, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
 ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
 ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
 ggplot(caracteristiques, aes(x=jour)) + geom_bar()+ggtitle("Nombre d'accident par jours")+ xlab("Numero du jour")+ylab("Nombre d'accident")
