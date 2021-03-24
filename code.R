@@ -26,28 +26,28 @@ d3 <- d1 %>%
   summarise(Count = sum(Count))
 
 ggplotly(ggplot(d2, aes(x=Date, y=Count)) + geom_line() + geom_smooth(formula=y~x, method = 'loess') + ggtitle("Nombre d'accidents de 2005 à 2020")+ylab("Nombre d'accidents"))
-plot_ly(d3, x=~Date) %>% add_lines(y=~Count) %>% layout(xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents"))
+plot_ly(d3, x=~Date) %>% add_lines(y=~Count) %>% layout(title = "Nombre d'accident en fonction des mois de la semaines de 2005 à 2019",xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents"))
 
-plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
+plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 à 2019", yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
 
 
 
-plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(xaxis=list(title="Mois de l'annee"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
-plot_ly(d1, x=~day) %>% add_boxplot(y=~Count, color=~factor(month.abb[month(Date)], levels = month.abb)) %>% layout(xaxis=list(title="Jours de la semaine"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
+plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 à 2019",xaxis=list(title="Mois de l'annee"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
+plot_ly(d1, x=~day) %>% add_boxplot(y=~Count, color=~factor(month.abb[month(Date)], levels = month.abb)) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 à 2019",xaxis=list(title="Jours de la semaine"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
 
-plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count) %>% layout(xaxis=list(title="Jours du mois", yaxis=list(title="Nombre d'accidents")))
+plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction du mois de l'annee de 2005 à 2019",xaxis=list(title="Jours du mois", yaxis=list(title="Nombre d'accidents")))
 d4 <- d1 %>%
   mutate(Mois=month(Date), Day=day(Date), p=paste(month(Date), day(Date)), Date = as.Date(paste(year(Date), month(Date), day(Date), sep = '-'))) %>%
   group_by(Day, Mois, p, Date) %>%
   summarise(Count = sum(Count))
 d4 <- d4[ with(d4, order(Mois, Day)), ]
 
-plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)%>% layout(xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents")) #par mois
-plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
-plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(xaxis = list(title="Dates"), yaxis = list(title="Nombre d'accidents")) #par jour
+plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 à 2019",xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents")) #par mois
+plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction du numero de la semaine de 2005 à 2019",xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
+plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(title = "Nombre d'accident en fonction des jours de l'annee de 2005 à 2019",xaxis = list(title="Jour de l'année"), yaxis = list(title="Nombre d'accidents")) #par jour
 ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")
-ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")
-ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")
+ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
+ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
 ggplot(caracteristiques, aes(x=jour)) + geom_bar()+ggtitle("Nombre d'accident par jours")+ xlab("Numero du jour")+ylab("Nombre d'accident")
 ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accident par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")
 ggplot(caracteristiques[caracteristiques$an==2019,], aes(x=as.Date(paste(an, mois, jour, sep='-')))) + geom_bar()+ggtitle("Nombre d'accident par jour en 2019")+ xlab("Date")+ylab("Nombre d'accident")
