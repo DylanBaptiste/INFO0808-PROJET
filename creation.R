@@ -21,7 +21,7 @@ str(anhr)
 plot_ly(anhr, x=~hr, y=~count, color=~an, type='scatter', mode = 'lines')%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Nombre d'accident"))
 plot_ly(anhr, x=~an, y=~count, color=~hr, type='scatter', mode = 'lines')%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Annee"), yaxis = list(title="Nombre d'accident"))
 plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
-plot_ly(anhr, x=~hr, y=~an, z=~count, type="scatter3d") # osef de lui ?
+plot_ly(anhr, x=~hr, y=~an, z=~count, color=~an, type="scatter3d",  mode = 'lines', line = list(width = 30)) # osef de lui ?
 
 plot_ly(anhr, x=~hr, y=~count, color=~an, type="bar")
 
