@@ -62,15 +62,20 @@ usagers <- read.csv("clean_datasets/usagers.csv", sep=',')
 str(usagers)
 View(usagers)
 
-ggplot(usagers, aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des personnes impliquées dans un accident de la route en France en 2019")
+ggplot(usagers, aes(x=an-an_nais)) + geom_bar() + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des personnes impliquées dans un accident de la route en France en 2019")
 
-ggplot(usagers[usagers$place==1,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des conducteurs impliqués dans un accident de la route en France en 2019")
+labeller.sexe <- function(variable, value){ return (list("1"="Homme", "2"="Femme")[value])}
+ggplot(usagers,                   aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe, labeller=labeller.sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des personnes impliquées dans un accident de la route en France en 2019")
+ggplot(usagers[usagers$catu==1,], aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe, labeller=labeller.sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des conducteurs impliqués dans un accident de la route en France en 2019")
+ggplot(usagers[usagers$catu==2,], aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe, labeller=labeller.sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des non conducteurs impliqués dans un accident de la route en France en 2019")
 
-ggplot(usagers[usagers$place!=1,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des non conducteurs impliqués dans un accident de la route en France en 2019")
+d7 <- setNames(data.frame(table(usagers$an - usagers$an_nais, usagers$sexe, usagers$grav)), c("age", "sexe", "grav", "total"))
+ggplotly(ggplot(d7) + aes(x=age, y=total, fill=factor(grav, levels=c(1,4,3,2))) + geom_bar(stat="identity") + theme_minimal())
 
-ggplot(usagers[usagers$place==2,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des passagé avant ou moto impliqués dans un accident de la route en France en 2019")
 
-ggplot(usagers[usagers$place==10,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("place inconnu (10 ?)")
+ggplot(usagers[usagers$place==2,], aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des passagé avant ou moto impliqués dans un accident de la route en France en 2019")
+
+ggplot(usagers[usagers$place==10,], aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("place inconnu (10 ?)")
 
 
 ggplot(usagers[usagers$catu==1,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Conducteur")
