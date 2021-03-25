@@ -1,6 +1,6 @@
 ---
 title: "INFO0808: Visualisation de données - Accidents corporels de la circulation routière Années de 2005 à 2019"
-authors: "Baptiste Dylan, Gandossi Jean-Victor"
+author: "Baptiste Dylan, Gandossi Jean-Victor"
 date: "25/03/2021"
 output:
   slidy_presentation: default
@@ -18,6 +18,10 @@ library(leaflet)
 library(leaflet.opacity)
 library(viridisLite)
 library(broom)
+
+library(leaflet)
+library(leaflet.opacity)
+library(viridisLite)
 
 accidents <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
 anhr <- setNames(data.frame(table(accidents$an, accidents$hr)), c("an", "hr", "count"))
@@ -42,6 +46,16 @@ d4 <- d1 %>%
   summarise(Count = sum(Count))
 d4 <- d4[ with(d4, order(Mois, Day)), ]
 
+d5 <- setNames(data.frame(table(weekdays(as.Date(paste(accidents$an, accidents$mois, accidents$jour, sep='-'))), accidents$hr )),c("Day", "hr", "Count"))
+
+d6 <- d1[,c("Date", "Count")]
+d6$breaks <- as.Date(cut(as.Date(d1$Date, format = "%Y-%m-%d"), breaks = "33 days"), format = "%Y-%m-%d")
+d6 <- d6 %>% group_by(breaks) %>% summarise(Count = sum(Count))
+lois = data.frame(Date = c("2012-01-05", "2012-07-01", "2018-07-01"), text=c("avertisseurs de radars interdits", "éthylotest obligatoirs", "loi 80Km/h"), colors="red", "black", "green")
+
+l <- loess(Count ~ as.numeric(breaks), data=d6)
+r <- setNames(augment(l), c("Count", ".se.fit", ".fitted"))
+r$breaks <- d6$breaks
 ```
 
 ## Présentation du jeu de données 
@@ -89,7 +103,7 @@ infra : Aménagement (Souterrain,  Voie ferrée...)
 situ : Situation de l’accident (trottoir, piste cyclable...)
 vma : Vitesse maximale autorisée sur le lieu et au moment de l’accident.
 
-# VÉHICULES
+## VÉHICULES
 Num_Acc    
 id_vehicule  : Identifiant unique du véhicule repris pour chacun des usagers occupant ce véhicule (y compris les  piétons qui sont rattachés aux véhicules qui les ont heurtés) 
 Num_Veh : Identifiant du véhicule repris pour chacun des usagers occupant ce véhicule (y compris les piétons qui sont rattachés aux véhicules qui les ont heurtés)
@@ -145,13 +159,25 @@ plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~C
 plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction du numero de la semaine de 2005 ? 2019",xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
 plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(title = "Nombre d'accident en fonction des jours de l'annee de 2005 ? 2019",xaxis = list(title="Jour de l'ann?e"), yaxis = list(title="Nombre d'accidents")) #par jour
 
-ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
-
 ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
 ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
-ggplot(caracteristiques, aes(x=jour)) + geom_bar()+ggtitle("Nombre d'accident par jours")+ xlab("Numero du jour")+ylab("Nombre d'accident")
-ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accident par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")
-ggplot(caracteristiques[caracteristiques$an==2019,], aes(x=as.Date(paste(an, mois, jour, sep='-')))) + geom_bar()+ggtitle("Nombre d'accident par jour en 2019")+ xlab("Date")+ylab("Nombre d'accident")
+```
+```{r, warning=FALSE}
 
+plot_ly(d6, x=~breaks) %>%
+	add_lines(y=~Count, name='Total', opacity=0.25, line = list(color = '#553333')) %>%
+	add_lines(y=~fitted(l), line=list(color='#07A4B5'), name="Loess Smoother", showlegend=TRUE) %>%
+	add_ribbons(data=r, ymin = ~.fitted - 0.04 * .se.fit, ymax = ~.fitted + 0.04 * .se.fit, line = list(color = 'rgba(7, 164, 181, 0.05)'), fillcolor = 'rgba(7, 164, 181, 0.2)', name = "Standard Error") %>%
+	add_segments(data=lois, x=~Date, xend=~Date, color=~text, colors=~colors, text=~text, y=min(d6$Count), yend=max(d6$Count))
 ```
 
+
+
+## Cartes
+
+```{r, warning=FALSE}
+ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+
+```
