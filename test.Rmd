@@ -176,8 +176,17 @@ plot_ly(d6, x=~breaks) %>%
 ## Cartes
 
 ```{r, warning=FALSE}
+map.opacity = 0.30
 ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
 
+paris <- caracteristiques[(caracteristiques$dep == 75) & (caracteristiques$an == 2019), ] # paris en 2019
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 
 ```
+
+## Test
+```{r, warning=FALSE}
+
+dep <- caracteristiques[(caracteristiques$an > 2018), ]
+leaflet(data = dep) %>% addCircleMarkers(~long, ~lat, radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+````
