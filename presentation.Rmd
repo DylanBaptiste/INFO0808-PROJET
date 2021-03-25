@@ -2,7 +2,8 @@
 title: "presentation"
 author: "BAPTISTE Dylan"
 date: "25/03/2021"
-output: html_document
+output: 
+	ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}

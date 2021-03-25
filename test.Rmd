@@ -1,6 +1,8 @@
 ---
-title: "Untitled"
-author: "BAPTISTE Dylan"
+title: "INFO0808: Visualisation de données - Accidents corporels de la circulation routière Années de 2005 à 2019"
+authors: 
+	- Baptiste Dylan
+	- Gandossi Jean-Victor
 date: "25/03/2021"
 output:
   beamer_presentation: default
@@ -24,21 +26,86 @@ anhr <- setNames(data.frame(table(accidents$an, accidents$hr)), c("an", "hr", "c
 
 ```
 
-## R Markdown
+## Présentation du jeu de données
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Fichiers rempli par les forces de l’ordre intervenue sur l’accident.
+- CARACTERISTIQUES : décrit les circonstances générales de l’accident
+- LIEUX :  décrit  le  lieu  principal  de  l’accident
+- VEHICULES : Véhicule impliqué dans l’accident
+- USAGERS : Usager impliqué dans un accident
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+## CARACTERISTIQUES
+Num_Acc : Numéro d'identifiant de l’accident.  
+hrmn : Heure et minutes de l'accident.
+jour
+mois  
+an
+lum : Lumière : conditions d’éclairage dans lesquelles l'accident s'est produit
+dep
+com
+agg : Hors agglomération ou non
+int : type d’intersection
+atm : Conditions atmosphériques
+col : Type de collision
+adr : Adresse postale
+lat
+long
 
-## Slide with Bullets
+## LIEUX
+Num_Acc : Numéro d'identifiant de l’accident.  
+catr : Catégorie de route
+voie : Numéro de la route
+V1 : Indice numérique du numéro de route (exemple : 2 bis, 3 ter etc.).
+V2 : Lettre indice alphanumérique de la route. 
+circ : Régime de circulation
+nbv : Nombre total de voies de circulation.
+vosp : Signale l’existence d’une voie réservée, indépendamment du fait que l’accident ait lieu ou non sur  cette voie.
+prof : Profil en long décrit la déclivité de la route à l'endroit de l'accident :  
+pr : Numéro du PR de rattachement (numéro de la borne amont).
+pr1 : Distance en mètres au PR (par rapport à la borne amont).   
+plan : Tracé en plan :  
+lartpc : Largeur du terre-plein central (TPC) s'il existe (en m).  
+larrout : Largeur de la chaussée affectée à la circulation des véhicules ne sont pas compris les bandes d'arrêt  d'urgence, les TPC et les places de stationnement (en m).  
+surf : Etat de la surface :
+infra : Aménagement (Souterrain,  Voie ferrée...)
+situ : Situation de l’accident (trottoir, piste cyclable...)
+vma : Vitesse maximale autorisée sur le lieu et au moment de l’accident.
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+# VÉHICULES
+Num_Acc    
+id_vehicule  : Identifiant unique du véhicule repris pour chacun des usagers occupant ce véhicule (y compris les  piétons qui sont rattachés aux véhicules qui les ont heurtés) 
+Num_Veh : Identifiant du véhicule repris pour chacun des usagers occupant ce véhicule (y compris les piétons qui sont rattachés aux véhicules qui les ont heurtés)
+senc : Sens de circulation
+catv : Catégorie du véhicule  
+obs : Obstacle fixe heurté  
+obsm : Obstacle mobile heurté  
+choc : Point de choc initial  
+manv : Manoeuvre principale avant l’accident
+motor : Type de motorisation du véhicule
+occutc : Nombre d’occupants dans le transport en commun
 
-## Slide with R Output
+## USAGERS
+Num_Acc
+id_vehicule : Identifiant unique du véhicule repris pour chacun des usagers occupant ce véhicule
+Num_Veh : Identifiant du véhicule repris pour chacun des usagers occupant ce véhicule
+place : Permet de situer la place occupée dans le véhicule par l'usager au moment de l'accident.
+catu : Catégorie d'usager  
+grav : Gravité de blessure de l'usager
+sexe : Sexe de l'usager
+An_nais : Année de naissance de l'usager.  
+trajet : Motif du déplacement au moment de l’accident
+secu1 : Le renseignement du caractère indique la présence et l’utilisation de l’équipement de sécurité :  
+secu2 : Le renseignement du caractère indique la présence et l’utilisation de l’équipement de sécurité :  
+secu3 : Le renseignement du caractère indique la présence et l’utilisation de l’équipement de sécurité :  
+locp : Localisation du piéton
+actp : Action du piéton
+etatp : Cette variable permet de préciser si le piéton accidenté était seul ou non
 
-```{r cars, echo = TRUE}
+
+
+## Dates
+
+```{r cars, warning=FALSE}
 plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
 plot_ly(anhr, x=~hr, y=~an, z=~count, color=~an, type="scatter3d",  mode = 'lines', line = list(width = 30)) # osef de lui ?
 
