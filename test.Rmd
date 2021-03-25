@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+author: "BAPTISTE Dylan"
+date: "25/03/2021"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("ggplot2")
+library("dplyr")
+library("lubridate")
+library("plotly")
+library(leaflet)
+library(leaflet.opacity)
+library(viridisLite)
+library(broom)
+
+accidents <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
+anhr <- setNames(data.frame(table(accidents$an, accidents$hr)), c("an", "hr", "count"))
+
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
+plot_ly(anhr, x=~hr, y=~an, z=~count, color=~an, type="scatter3d",  mode = 'lines', line = list(width = 30)) # osef de lui ?
+
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
