@@ -1,8 +1,6 @@
 ---
 title: "INFO0808: Visualisation de données - Accidents corporels de la circulation routière Années de 2005 à 2019"
-authors: 
-	- Baptiste Dylan
-	- Gandossi Jean-Victor
+authors: "Baptiste Dylan, Gandossi Jean-Victor"
 date: "25/03/2021"
 output:
   slidy_presentation: default
@@ -46,7 +44,7 @@ d4 <- d4[ with(d4, order(Mois, Day)), ]
 
 ```
 
-## Présentation du jeu de données
+## Présentation du jeu de données 
 
 Fichiers rempli par les forces de l’ordre intervenue sur l’accident.
 - CARACTERISTIQUES : décrit les circonstances générales de l’accident
