@@ -5,9 +5,9 @@ authors:
 	- Gandossi Jean-Victor
 date: "25/03/2021"
 output:
-  beamer_presentation: default
-  ioslides_presentation: default
   slidy_presentation: default
+  ioslides_presentation: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -23,6 +23,26 @@ library(broom)
 
 accidents <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
 anhr <- setNames(data.frame(table(accidents$an, accidents$hr)), c("an", "hr", "count"))
+caracteristiques <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
+str(caracteristiques)
+d1 <- setNames(data.frame(table(as.Date(paste(caracteristiques$an, caracteristiques$mois, caracteristiques$jour, sep='-')))),c("Date","Count"))
+d1$day <- weekdays(as.Date(d1$Date))
+
+d2 <- d1 %>%
+  mutate(Mois=month(Date), Date = as.Date(paste(year(Date), month(Date), '01', sep = '-'))) %>%
+  group_by(Date, Mois) %>%
+  summarise(Count = sum(Count))
+
+d3 <- d1 %>%
+  mutate(Date = month(Date)) %>%
+  group_by(Date) %>%
+  summarise(Count = sum(Count))
+
+d4 <- d1 %>%
+  mutate(Mois=month(Date), Day=day(Date), p=paste(month(Date), day(Date)), Date = as.Date(paste(year(Date), month(Date), day(Date), sep = '-'))) %>%
+  group_by(Day, Mois, p, Date) %>%
+  summarise(Count = sum(Count))
+d4 <- d4[ with(d4, order(Mois, Day)), ]
 
 ```
 
