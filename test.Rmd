@@ -123,15 +123,35 @@ etatp : Cette variable permet de préciser si le piéton accidenté était seul 
 
 ## Dates
 
-```{r cars, warning=FALSE}
-plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
-plot_ly(anhr, x=~hr, y=~an, z=~count, color=~an, type="scatter3d",  mode = 'lines', line = list(width = 30)) # osef de lui ?
+```{r, warning=FALSE}
+plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 ? 2019", yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
+
+```
+```{r, warning=FALSE}
+plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis=list(title="Mois de l'annee"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
+
+```
+```{r, warning=FALSE}
+plot_ly(d1, x=~factor(day, levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% add_boxplot(y=~Count, color=~factor(month.abb[month(Date)], levels = month.abb)) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 ? 2019",xaxis=list(title="Jours de la semaine"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
+
+```
+```{r, warning=FALSE}
+plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction du mois de l'annee de 2005 ? 2019",xaxis=list(title="Jours du mois", yaxis=list(title="Nombre d'accidents")))
 
 ```
 
-## Slide with Plot
+```{r, warning=FALSE}
+plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents")) #par mois
+plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction du numero de la semaine de 2005 ? 2019",xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
+plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(title = "Nombre d'accident en fonction des jours de l'annee de 2005 ? 2019",xaxis = list(title="Jour de l'ann?e"), yaxis = list(title="Nombre d'accidents")) #par jour
 
-```{r pressure}
-plot(pressure)
+ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
+ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
+ggplot(caracteristiques, aes(x=jour)) + geom_bar()+ggtitle("Nombre d'accident par jours")+ xlab("Numero du jour")+ylab("Nombre d'accident")
+ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accident par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")
+ggplot(caracteristiques[caracteristiques$an==2019,], aes(x=as.Date(paste(an, mois, jour, sep='-')))) + geom_bar()+ggtitle("Nombre d'accident par jour en 2019")+ xlab("Date")+ylab("Nombre d'accident")
+
 ```
 
