@@ -9,8 +9,6 @@ library("plotly")
 # ================================== PLOT OK ================================== #
 # ================================== ======= ================================== #
 caracteristiques <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
-
-
 str(caracteristiques)
 d1 <- setNames(data.frame(table(as.Date(paste(caracteristiques$an, caracteristiques$mois, caracteristiques$jour, sep='-')))),c("Date","Count"))
 d1$day <- weekdays(as.Date(d1$Date))
