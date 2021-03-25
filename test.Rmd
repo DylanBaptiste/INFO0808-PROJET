@@ -1,5 +1,5 @@
 ---
-title: "INFO0808: Visualisation de données"
+title: "INFO0808: Visualisation de donnees"
 author: "BAPTISTE Dylan  Gandossi Jean-Victor"
 date: "25/03/2021"
 output:
