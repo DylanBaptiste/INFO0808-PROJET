@@ -82,7 +82,6 @@ ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap
 
 
 labeller.catu <- function(variable, value){ return (list("1"="Indemne", "2"="Tué", "3"="Blessé hospitalisé", "4"="Blessé léger")[value])}
-ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(vars(grav, sexe), nrow = 4, labeller=labeller.catu ) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 10)) + ggtitle("")
 ggplot(usagers[usagers$catu==3,], aes(x=2019-an_nais)) + geom_bar() + facet_wrap(vars(grav, sexe), nrow = 4) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("")
 
 
@@ -171,7 +170,7 @@ pal <- colorFactor(palette = viridis(100), domain = factor(bchr$hr))
 leaflet(data = bchr) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(bchr$long, na.rm=TRUE), lat=median(bchr$lat, na.rm=TRUE), zoom = 10)
 
 pal <- colorFactor(palette = viridis(100), domain = factor(paris$an))
-leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~paris, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
+leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1)
 
 pal <- colorFactor(palette = viridis(100), domain = factor(marne$hr))
 leaflet(data = marne) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 5, stroke = FALSE, fillOpacity = 0.75) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(marne$long, na.rm=TRUE), lat=median(marne$lat, na.rm=TRUE), zoom = 10)
@@ -180,7 +179,7 @@ leaflet(data = marne) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 
 str(caracteristiques)
 outmer <- caracteristiques[(caracteristiques$dep == '974'), ] # reunion 
 pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(2019, 2005))
-pal <- colorNumeric(palette = magma(100, direction = -1), domain = range(outmer$an))
+pal <- colorFactor(palette = magma(100, direction = -1), domain = factor(outmer$an))
 #aberation pour les années avant 2019 la lat est positive ?????
 leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
 head(read.csv("datasets/caracteristiques_2018.csv", sep=',', header = TRUE), 5)

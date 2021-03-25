@@ -72,7 +72,6 @@ ggplot(usagers[usagers$catu==2,], aes(x=an-an_nais)) + geom_bar() + facet_wrap(~
 
 
 d7 <- setNames(data.frame(table(usagers$an - usagers$an_nais, usagers$sexe, usagers$grav)), c("age", "sexe", "grav", "total"))
-
 ggplotly(ggplot(d7) + aes(x=age, y=total, fill=factor(grav, levels=c(1,4,3,2))) + geom_bar(stat="identity") + scale_x_discrete(name="âge", breaks = seq(0, 100, 5)))
 ggplotly(ggplot(d7) + aes(x=age, y=total, fill=factor(grav, levels=c(1,4,3,2))) + geom_bar(stat="identity") + facet_wrap(~sexe, labeller=labeller.sexe) + scale_x_discrete(name="âge", breaks = seq(0, 100, 5)))
 

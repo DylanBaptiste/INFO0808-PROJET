@@ -141,28 +141,36 @@ Num_Acc
 ```{r, warning=FALSE}
 plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 ? 2019", yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
 
-```
-```{r, warning=FALSE}
-plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis=list(title="Mois de l'annee"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
-
-```
-```{r, warning=FALSE}
 plot_ly(d1, x=~factor(day, levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% add_boxplot(y=~Count, color=~factor(month.abb[month(Date)], levels = month.abb)) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 ? 2019",xaxis=list(title="Jours de la semaine"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
-
 ```
-```{r, warning=FALSE}
-plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction du mois de l'annee de 2005 ? 2019",xaxis=list(title="Jours du mois", yaxis=list(title="Nombre d'accidents")))
-
-```
-
 ```{r, warning=FALSE}
 plot_ly(d2, x=~factor(month.abb[Mois], levels = month.abb)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis = list(title="Mois de l'annee"), yaxis = list(title="Nombre d'accidents")) #par mois
+
+plot_ly(d1, x=~factor(month.abb[month(Date)], levels = month.abb)) %>% add_boxplot(y=~Count, color=~factor(day , levels=c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"))) %>% layout(title = "Nombre d'accident en fonction des mois de l'annee de 2005 ? 2019",xaxis=list(title="Mois de l'annee"), yaxis=list(title="Nombre d'accidents"),boxmode = "group")
+```
+
+```{r, warning=FALSE}
+plot_ly(d1, x=~day(Date)) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction du jour du mois de l'annee de 2005 à 2019",xaxis=list(title="Jours du mois", yaxis=list(title="Nombre d'accidents")))
+
+```
+
+```{r, warning=FALSE}
+
 plot_ly(d1, x=~week(Date)) %>% add_boxplot(y=~Count)%>% layout(title = "Nombre d'accident en fonction du numero de la semaine de 2005 ? 2019",xaxis = list(title="Numero de la semaine"), yaxis = list(title="Nombre d'accidents")) #par semaine
+
 plot_ly(d4, x=~p) %>% add_boxplot(y=~Count) %>% layout(xaxis = list(categoryorder = "array", categoryarray =d4$p))%>% layout(title = "Nombre d'accident en fonction des jours de l'annee de 2005 ? 2019",xaxis = list(title="Jour de l'ann?e"), yaxis = list(title="Nombre d'accidents")) #par jour
 
 ggplot(caracteristiques, aes(x=an)) + geom_bar()+ggtitle("Nombre d'accident par an")+ xlab("Annee")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
+
 ggplot(caracteristiques, aes(x=mois)) + geom_bar()+ggtitle("Nombre d'accident par mois")+ xlab("Mois")+ylab("Nombre d'accident")+ geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, colour = "white")
 ```
+```{r, warning=FALSE}
+d7 <- setNames(data.frame(table(usagers$an - usagers$an_nais, usagers$sexe, usagers$grav)), c("age", "sexe", "grav", "total"))
+ggplotly(ggplot(d7) + aes(x=age, y=total, fill=factor(grav, levels=c(1,4,3,2))) + geom_bar(stat="identity") + scale_x_discrete(name="âge", breaks = seq(0, 100, 5)))
+ggplotly(ggplot(d7) + aes(x=age, y=total, fill=factor(grav, levels=c(1,4,3,2))) + geom_bar(stat="identity") + facet_wrap(~sexe, labeller=labeller.sexe) + scale_x_discrete(name="âge", breaks = seq(0, 100, 5)))
+
+```
+
 ```{r, warning=FALSE}
 
 plot_ly(d6, x=~breaks) %>%
@@ -177,17 +185,55 @@ plot_ly(d6, x=~breaks) %>%
 ## Cartes
 
 ```{r, warning=FALSE}
-map.opacity = 0.30
-ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
 
+ggplot(caracteristiques, aes(x=dep)) + geom_bar()+ggtitle("Nombre d'accidents par departement")+ xlab("Numero de departement")+ylab("Nombre d'accident")+ geom_text(aes(label = dep), vjust=.35, hjust = -.5,angle=90, stat = "count", colour = "black") + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+```
+## Cartes - Paris
+```{r, warning=FALSE}
+map.opacity = 0.30
 paris <- caracteristiques[(caracteristiques$dep == 75) & (caracteristiques$an == 2019), ] # paris en 2019
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
+```
+## Cartes - Marne
+```{r, warning=FALSE}
+marne <- caracteristiques[(caracteristiques$dep == 51) & (caracteristiques$an == 2019), ]
+
+pal <- colorFactor(palette = viridis(100), domain = factor(marne$lum))
+leaflet(data = marne) %>% addCircleMarkers(~long, ~lat, color=~pal(lum), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~lum, opacity = 1)
+
+pal <- colorFactor(palette = viridis(100), domain = factor(marne$hr))
+leaflet(data = marne) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 5, stroke = FALSE, fillOpacity = 0.75) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(marne$long, na.rm=TRUE), lat=median(marne$lat, na.rm=TRUE), zoom = 10)
 
 ```
+## Cartes - 02, 51, 93, 60, 77, 75
+```{r, warning=FALSE}
+dep <- caracteristiques[(caracteristiques$dep %in% c("51","2","93", "60", "77", "75")) & (caracteristiques$an > 2018), ]
+pal <- colorFactor(palette = viridis(100), domain = factor(dep$hr))
+leaflet(data = dep) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(dep$long, na.rm=TRUE), lat=median(dep$lat, na.rm=TRUE), zoom = 10)
+```
+## Cartes - Bouches-du-Rhône
+```{r, warning=FALSE}
+bchr <- caracteristiques[(caracteristiques$dep %in% c("13")) & (caracteristiques$an > 2018), ]
+pal <- colorFactor(palette = viridis(100), domain = factor(bchr$hr))
+leaflet(data = bchr) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(bchr$long, na.rm=TRUE), lat=median(bchr$lat, na.rm=TRUE), zoom = 10)
+```
 
-## Test
+## Cartes - Reunion
+```{r, warning=FALSE}
+outmer <- caracteristiques[(caracteristiques$dep == '974'), ] # reunion 
+
+pal <- colorFactor(palette = magma(100, direction = -1), domain = factor(outmer$an))
+leaflet(data = outmer) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
+head(read.csv("datasets/caracteristiques_2018.csv", sep=',', header = TRUE), 5)
+head(read.csv("datasets/caracteristiques_2019.csv", sep=';', header = TRUE), 5)
+leaflet(data = outmer) %>% addCircleMarkers(~long, ~-abs(lat), color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values =~an, opacity = 1)
+table(sort(outmer$an))
+```
+
+## France
 ```{r, warning=FALSE}
 
 dep <- caracteristiques[(caracteristiques$an > 2018), ]
 leaflet(data = dep) %>% addCircleMarkers(~long, ~lat, radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 ````
+
