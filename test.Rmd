@@ -1,6 +1,6 @@
 ---
-title: "Untitled"
-author: "BAPTISTE Dylan"
+title: "INFO0808: Visualisation de données"
+author: "BAPTISTE Dylan | Gandossi Jean-Victor"
 date: "25/03/2021"
 output:
   slidy_presentation: default
