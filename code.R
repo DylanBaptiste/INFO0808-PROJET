@@ -140,23 +140,23 @@ leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, 
 
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color="red", radius= 2, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity))
 
-pal <- colorNumeric(palette = viridis(100), domain = range(paris$int))
+pal <- colorFactor(palette = viridis(100), domain = factor(paris$int))
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(int), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~int, opacity = 1)
 
-pal <- colorNumeric(palette = viridis(100), domain = range(paris$lum))
+pal <- colorFactor(palette = viridis(100), domain = factor(paris$lum))
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(lum), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~lum, opacity = 1)
 
-pal <- colorNumeric(palette = viridis(100), domain = range(paris$atm))
+pal <- colorFactor(palette = viridis(100), domain = factor(paris$atm))
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(atm), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~atm, opacity = 1)
 
-pal <- colorNumeric(palette = viridis(100), domain = range(paris$col))
+pal <- colorFactor(palette = viridis(100), domain = factor(paris$col))
 leaflet(data = paris) %>% addCircleMarkers(~long, ~lat, color=~pal(col), radius= 3, stroke = FALSE, fillOpacity = 1) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~col, opacity = 1)
 
 caracteristiques <- read.csv("caracteristiques.csv", sep=',', header = TRUE)
 reims <- caracteristiques[(caracteristiques$dep == 51) & (caracteristiques$an >= 2005), ] # reims entre 2015 et 2019
-pal <- colorNumeric(palette = viridis(100), domain = range(reims$an))
+pal <- colorFactor(palette = viridis(100), domain = factor(reims$an))
 leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color=~pal(an), radius= 3, stroke = FALSE, fillOpacity = 0.5) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~an, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
-pal <- colorNumeric(palette = viridis(100), domain = range(reims$hr))
+pal <- colorFactor(palette = viridis(100), domain = factor(reims$hr))
 leaflet(data = reims) %>% addCircleMarkers(~long, ~lat, color=~pal(hr), radius= 5, stroke = FALSE, fillOpacity = 0.75) %>% addProviderTiles("Stamen.Toner", options = list(opacity=map.opacity)) %>% addLegend("bottomright", pal = pal, values = ~hr, opacity = 1) %>% setView(lng=median(reims$long, na.rm=TRUE), lat=median(reims$lat, na.rm=TRUE), zoom = 10)
 
 
