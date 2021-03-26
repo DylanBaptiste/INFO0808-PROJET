@@ -1,0 +1,39 @@
+---
+title: "INFO0808: Visualisation de données - Accidents corporels de la circulation routière Années de 2005 à 2019"
+author: "Baptiste Dylan, Gandossi Jean-Victor"
+date: "25/03/2021"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(out.width = '100%')
+library("ggplot2")
+library("dplyr")
+library("lubridate")
+library("plotly")
+library(leaflet)
+library(leaflet.opacity)
+library(viridisLite)
+library(broom)
+
+library(leaflet)
+library(leaflet.opacity)
+library(viridisLite)
+
+caracteristiques <- read.csv("clean_datasets/accidents.csv", sep=',', header = TRUE)
+
+d1 <- setNames(data.frame(table(as.Date(paste(caracteristiques$an, caracteristiques$mois, caracteristiques$jour, sep='-')))),c("Date","Count"))
+d1$day <- weekdays(as.Date(d1$Date))
+
+
+```
+
+## Dates
+
+```{r, warning=FALSE}
+plot_ly(d1, x=~day) %>% add_boxplot(y=~Count) %>% layout(title = "Nombre d'accident en fonction des jours de la semaines de 2005 ? 2019", yaxis = list(title="Nombre d'accidents"), xaxis = list(title = "Jours de la semaine",categoryorder = "array", categoryarray = c("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")))
+```

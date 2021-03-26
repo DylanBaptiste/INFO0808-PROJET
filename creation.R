@@ -20,7 +20,7 @@ str(anhr)
 
 plot_ly(anhr, x=~hr, y=~count, color=~an, type='scatter', mode = 'lines')%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Nombre d'accident"))
 plot_ly(anhr, x=~an, y=~count, color=~hr, type='scatter', mode = 'lines')%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Annee"), yaxis = list(title="Nombre d'accident"))
-plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
+plot_ly(anhr, x=~hr, y=~an, z=~count, type="heatmap")%>% layout(title = "Nombre d'accident en fonction de l'heure et de l'annee de 2005 a 2019",xaxis = list(title="Heure"), yaxis = list(title="Annee"))
 plot_ly(anhr, x=~hr, y=~an, z=~count, color=~an, type="scatter3d",  mode = 'lines', line = list(width = 30)) # osef de lui ?
 
 plot_ly(anhr, x=~hr, y=~count, color=~an, type="bar")
@@ -155,8 +155,7 @@ usagers <- read.csv("clean_datasets/usagers.csv", sep=',', header = TRUE)
 str(usagers)
 ggplotly(ggplot(usagers, aes(x=an-an_nais)) + geom_bar() + facet_wrap(~sexe) + scale_x_continuous(name="âge", limits=c(0, 100), breaks = seq(0, 100, 5)) + ggtitle("Nombre et âge des personnes impliquées dans un accident de la route en France en 2019"))
 
-d <- setNames(data.frame(table(usagers[usagers$place != 1,]$place)), c('place', 'count'))
-plot_ly(d, x=~place) %>% add_bars(d, y=~count, text=~paste0(formatC(100 * count/sum(count), format='f', digits = 2), "%"), textposition = 'auto')
+
 
 # TODO test en separant par le sexe plot_ly(d, x=~place) %>% add_bars(d, y=~count text=~paste0(formatC(100 * count/sum(count), format='f', digits = 2), "%"), textposition = 'auto')
 
